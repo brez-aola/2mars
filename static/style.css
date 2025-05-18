@@ -1,0 +1,478 @@
+/* static/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;700&display=swap');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css");
+
+:root {
+    --ogame-bg: #0c1014;
+    --ogame-surface1: #151c23;
+    --ogame-surface2: #1f2a36;
+    --ogame-border: #2a3b4d;
+    --ogame-border-light: #4d6a8a;
+    --ogame-text: #c0c8d0;
+    --ogame-text-medium: #8c9baa;
+    --ogame-text-dark: #596773;
+    --ogame-highlight: #ff9600;
+    --ogame-highlight-hover: #ffb03e;
+    --ogame-green: #3cff3c;
+    --ogame-red: #ff4a4a;
+    --ogame-blue: #4ac8ff;
+
+    --font-primary: 'Orbitron', sans-serif;
+    --font-secondary: 'Roboto', sans-serif;
+    --base-font-size: 14px;
+    --border-radius: 4px;
+    --transition-speed: 0.2s;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-secondary);
+    background-color: var(--ogame-bg);
+    color: var(--ogame-text);
+    font-size: var(--base-font-size);
+    line-height: 1.5;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+.app-header {
+    background-color: var(--ogame-surface1);
+    border-bottom: 2px solid var(--ogame-border-light);
+    padding: 10px 20px;
+    text-align: center;
+    flex-shrink: 0;
+    z-index: 100;
+}
+.app-header h1 {
+    font-family: var(--font-primary);
+    color: var(--ogame-highlight);
+    font-size: 1.8em;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.game-top-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--ogame-bg);
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--ogame-border);
+    flex-wrap: wrap;
+    gap: 10px;
+    height: 40px;
+    flex-shrink: 0;
+}
+.res-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.85em;
+    background-color: var(--ogame-surface1);
+    padding: 3px 7px;
+    border-radius: 3px;
+    border: 1px solid var(--ogame-border);
+}
+.res-item i { margin-right: 5px; color: var(--ogame-highlight); }
+.res-item strong { color: var(--ogame-text); margin-right: 3px; }
+.res-item .res-value { color: var(--ogame-text); }
+.res-item .res-prod { margin-left: 4px; font-size: 0.9em; }
+.res-item .res-prod.positive { color: var(--ogame-green); }
+.res-item .res-prod.negative { color: var(--ogame-red); }
+
+
+.app-main-content {
+    flex-grow: 1;
+    display: flex; /* Direction row di default */
+    overflow: hidden;
+    padding: 5px;
+    gap: 5px;
+}
+
+/* Stili per i pannelli principali del layout di gioco */
+.game-panel {
+    background-color: var(--ogame-surface1);
+    border: 1px solid var(--ogame-border);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    /* overflow: hidden; Rimosso, i figli gestiscono */
+}
+
+.game-panel-left {
+    flex-basis: 280px;
+    flex-shrink: 0;
+    display: flex; /* Per gestire header e content interni */
+    flex-direction: column;
+    overflow: hidden; /* Il panel-content interno gestirà lo scroll y */
+}
+.game-panel-left > .panel-header { flex-shrink: 0; }
+.game-panel-left > .panel-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden; /* Previene l'espansione orizzontale */
+    padding: 10px;
+    min-height: 0;
+}
+
+.game-panel-center {
+    flex-grow: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.game-panel-right {
+    flex-basis: 320px;
+    flex-shrink: 0;
+    display: flex; /* Per gestire header e content interni */
+    flex-direction: column;
+    overflow: hidden; /* Il panel-content interno gestirà lo scroll y */
+}
+.game-panel-right > .panel-header { flex-shrink: 0; }
+.game-panel-right > .panel-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden; /* Previene l'espansione orizzontale */
+    padding: 10px;
+    min-height: 0;
+}
+
+.panel-header {
+    font-family: var(--font-primary);
+    background-color: var(--ogame-surface2);
+    color: var(--ogame-highlight);
+    padding: 8px 12px;
+    font-size: 1em;
+    border-bottom: 1px solid var(--ogame-border);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.panel-header .header-info { font-size: 0.8em; color: var(--ogame-text-medium); }
+
+.panel-content {
+    flex-grow: 1;
+    overflow-y: auto; /* Scroll generale per il contenuto del pannello */
+    padding: 10px;
+    min-height: 0; /* Aiuta flexbox con overflow */
+}
+
+/* Sovrascrivi padding per il .panel-content del pannello centrale */
+.game-panel-center > .panel-content {
+    padding: 0;
+    overflow: hidden; /* Lo scroll è gestito da .map-view-container o suoi figli */
+    display: flex; /* Per far funzionare flex-grow su .map-view-container */
+}
+
+.map-view-container {
+    display: flex;
+    flex-grow: 1; /* Occupa tutto lo spazio del .panel-content del pannello centrale */
+    /* height: 100%; non necessario se il genitore è flex e questo ha flex-grow */
+    overflow: hidden;
+}
+
+#hex-map-container {
+    flex-grow: 1;
+    position: relative;
+    background-color: #05080a; /* Sfondo scuro */
+    overflow: auto; /* Scroll per la mappa interna */
+    border: 2px dashed lime; /* BORDO PER DEBUG */
+    min-height: 300px; /* Dagli un'altezza minima per vederlo */
+}
+
+#hexMap {
+    position: absolute;
+    /* Non impostare width/height qui; si adatterà al contenuto,
+       ma per debug potresti provare a dargli dimensioni fisse per vedere. */
+}
+
+#selected-hex-info {
+    flex-basis: 250px;
+    flex-shrink: 0;
+    background-color: var(--ogame-surface1);
+    border-left: 1px solid var(--ogame-border);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Permette lo scroll se il contenuto è troppo alto */
+}
+#hex-details-content {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ogame-border);
+    flex-shrink: 0; /* Questa parte non deve ridursi */
+}
+#hex-specific-construction-module {
+    margin-top: 15px; /* Come da tuo HTML */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Occupa l'altezza rimanente */
+    min-height: 100px; /* Assicura sia visibile */
+    overflow: hidden; /* La lista interna gestirà lo scroll */
+}
+#hexBuildableBuildingList {
+    flex-grow: 1;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0 5px 0 0; /* Padding per la scrollbar */
+    margin: 0;
+}
+.item-list-icons .no-items {
+    padding: 10px;
+    text-align: center;
+    color: var(--ogame-text-dark);
+    font-style: italic;
+}
+
+
+/* Stili per i moduli (Commander, Faction Relations, Habitat, Construction nel pannello sx/dx) */
+.module {
+    margin-bottom: 10px;
+    background-color: var(--ogame-surface2);
+    border: 1px solid var(--ogame-border);
+    border-radius:var(--border-radius);
+    /* Aggiungi display:flex e flex-direction:column se vuoi che il module-body usi flex-grow */
+    /* display: flex; flex-direction: column; */
+}
+.module-header {
+    font-family: var(--font-primary);
+    background-color: var(--ogame-surface1);
+    color: var(--ogame-blue);
+    padding: 6px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--ogame-border);
+    font-size:0.9em;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-shrink: 0; /* L'header del modulo non si restringe */
+}
+.module-header:hover { background-color: var(--ogame-border); }
+.module-header h3, .module-header h4 { margin: 0; font-size: inherit; color:inherit;}
+.module-header::after { content: '▼'; transition: transform var(--transition-speed); }
+.module-header.active::after { transform: rotate(180deg); }
+
+.module-body {
+    padding: 8px;
+    display: none; /* Nascosto di default */
+    /* Se il modulo è flex-column, questo potrebbe aver bisogno di flex-grow:1 e overflow:auto */
+    /* flex-grow: 1; overflow-y: auto; min-height:0; */
+}
+.module-body.active { display: block; }
+
+.hex {
+    width: 150px;
+    height: 160px;
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.1s;
+    z-index: 1;
+    /* border: 1px solid transparent; Rimosso per evitare problemi di dimensione */
+}
+.hex.selected {
+    filter: drop-shadow(0px 0px 0px 2px var(--ogame-highlight));
+    z-index: 5;
+}
+.hex:hover:not(.selected):not(.unexplored) {
+    filter: drop-shadow(0px 0px 0px 2px var(--ogame-blue)) brightness(1.1);
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+/* Stili per terreni (background-color o background-image) */
+.hex.Plains { background-color: rgba(125, 109, 84, 0.85); }
+.hex.Volcanic { background-image: url("static/images/Terrain.png"); background-color: rgba(175, 26, 26, 0.85); }
+.hex.Canyon { background-image: url("static/images/Terrain.png"); backbackground-color: rgba(197, 125, 8, 0.85); }
+.hex.Icy_Terrain { background-color: rgba(69, 115, 255, 0.85); }
+.hex.Cratered_Highlands { background-color: rgba(160, 91, 22, 0.85); }
+.hex.Ancient_Riverbed { background-color: rgba(95, 95, 95, 0.85); }
+.hex.Unknown { background-color: rgba(16, 16, 16, 0.85); }
+
+.hex.unexplored {
+    background-color: transparent !important;
+    background-image: none !important;
+    /* clip-path: polygon(...); Mantieni il clip-path per la forma */
+    /* border: 2px dashed yellow !important; Per debug, ma la griglia SVG di sfondo è meglio */
+    cursor: default;
+}
+.hex.unexplored .hex-content-visuals { display: none; }
+
+.hex-content-visuals {
+    position: absolute; top:0;left:0;width:100%;height:100%;
+    display:flex; justify-content:center; align-items:center;
+    pointer-events:none; z-index:2; /* Sopra il background dell'esagono */
+    line-height:1;
+}
+.hex-icon { font-size: 28px; opacity:0.9; text-shadow: 0 0 5px #000; }
+.building-icon { color: #fff; }
+.resource-icon { color: #e0e0e0; font-size: 22px; }
+
+.player-start-hex {
+    filter: drop-shadow(0px 0px 0px 3px var(--ogame-green)) !important;
+    z-index: 6 !important;
+}
+.player-controlled-hex:not(.player-start-hex) {
+    /* Aggiungi un leggero bordo interno o un'ombra se vuoi evidenziare il controllo */
+    /* box-shadow: inset 0 0 0 2px var(--ogame-blue); */
+    /* Usare un filtro per il bordo è meglio con clip-path */
+    filter: drop-shadow(0px 0px 0px 1px var(--ogame-blue));
+}
+.player-controlled-hex.selected { /* Assicura che il selezionato prevalga */
+    filter: drop-shadow(0px 0px 0px 2px var(--ogame-highlight)) !important;
+}
+
+
+/* Liste (Tecnologie, Edifici nel pannello sx/dx) */
+.item-list-icons { list-style:none; padding:0; margin:0; }
+.item-list-icons li { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--ogame-border); font-size:0.9em;}
+.item-list-icons li:last-child { border-bottom:none; }
+.item-list-icons li:hover { background-color:var(--ogame-surface1); }
+.item-list-icons .item-icon { margin-right:8px; color:var(--ogame-blue); width:16px; text-align:center;}
+.item-list-icons .item-name { flex-grow:1; }
+.item-list-icons .item-cost { font-size:0.8em; color:var(--ogame-text-medium); white-space:nowrap; }
+.item-list-icons .item-actions button { padding: 4px 8px; font-size:0.8em; }
+
+/* Stili per pannello personaggio IN-GIOCO */
+.character-ingame-panel .module-body { overflow-y: auto; /* Se necessario */ }
+.character-ingame-portrait { /* Ok come prima */ }
+.character-ingame-panel .stat-list li,
+.faction-relations-panel .relation-item { /* Ok come prima */ }
+/* ... (resto degli stili specifici per personaggio/fazioni come da tua versione precedente) ... */
+/* Aggiungi o modifica questi stili in style.css */
+
+.faction-relations-panel .relation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Allinea verticalmente icona e stato */
+    padding: 6px 2px; /* Aumenta un po' il padding verticale */
+    font-size: 0.9em;  /* Leggermente più grande per leggibilità stato */
+    border-bottom: 1px solid var(--ogame-border);
+}
+.faction-relations-panel .relation-item:last-child {
+    border-bottom: none;
+}
+
+.faction-relations-panel .faction-icon-rel { /* Nuovo stile per l'icona */
+    display: inline-block; /* Permette width/height */
+    width: 30px;  /* Dimensione icona, aggiusta se necessario */
+    height: 30px;
+    margin-right: 8px;
+    cursor: default; /* O 'pointer' se vuoi che sia cliccabile in futuro */
+    /* Non serve background-color qui se l'SVG ha il suo */
+}
+.faction-relations-panel .faction-icon-rel svg { /* Assicura che l'SVG riempia il contenitore */
+    width: 100%;
+    height: 100%;
+}
+
+.faction-relations-panel .faction-status-rel {
+    font-weight: bold;
+    /* Le classi .friendly, .hostile, .neutral sono già definite */
+}
+
+/* Stili per la pagina Index (schermata start e setup) */
+.index-screen-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; padding: 20px; }
+.screen { display: none; animation: fadeInScreen 0.5s ease-in-out; }
+.screen.active { display: block; }
+@keyframes fadeInScreen { from { opacity: 0; } to { opacity: 1; } }
+.screen-content { max-width: 700px; width: 100%; padding: 30px 40px; background-color: var(--ogame-surface2); border: 1px solid var(--ogame-border); border-radius: var(--border-radius); box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+/* Per la schermata di setup che è più larga */
+#setup-screen .screen-content { max-width: 1200px; }
+
+.screen-content h2 { font-family: var(--font-primary); color: var(--ogame-highlight); margin-bottom: 20px; font-size: 1.6em; }
+.screen-content p { margin-bottom: 20px; font-size: 1em; color: var(--ogame-text-medium); }
+.btn { padding: 10px 20px; border: 1px solid var(--ogame-border-light); background-color: var(--ogame-surface1); color: var(--ogame-text); font-family: var(--font-primary); font-size: 0.9em; cursor: pointer; transition: background-color var(--transition-speed), border-color var(--transition-speed); border-radius: var(--border-radius); text-transform: uppercase; }
+.btn:hover:not(:disabled) { background-color: var(--ogame-surface2); border-color: var(--ogame-highlight); color: var(--ogame-highlight); }
+.btn:disabled { background-color: var(--ogame-text-dark); color: #444; border-color: var(--ogame-text-dark); cursor: not-allowed; }
+.btn-primary { background-color: var(--ogame-highlight); color: var(--ogame-bg); border-color: var(--ogame-highlight-hover); }
+.btn-primary:hover:not(:disabled) { background-color: var(--ogame-highlight-hover); border-color: var(--ogame-highlight); }
+.btn-success { background-color: var(--ogame-green) !important; color: var(--ogame-bg) !important; border-color: #2ca02c !important; }
+.btn.btn-primary-outline { background-color: transparent; color: var(--ogame-highlight); border: 1px solid var(--ogame-highlight); }
+.btn.btn-primary-outline:hover:not(:disabled) { background-color: var(--ogame-highlight); color: var(--ogame-bg); }
+
+.button-group { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-control { width: 100%; padding: 8px 10px; background-color: var(--ogame-bg); border: 1px solid var(--ogame-border); color: var(--ogame-text); border-radius: var(--border-radius); font-size: 1em; }
+.form-control:focus { border-color: var(--ogame-highlight); outline: none; }
+
+.setup-container { display: flex; gap: 20px; width: 100%; align-items: flex-start; }
+.setup-box { background-color: var(--ogame-surface1); border: 1px solid var(--ogame-border); border-radius: var(--border-radius); padding: 20px; flex: 1; min-width: 350px; display: flex; flex-direction: column;}
+.character-box { min-height: 580px; } /* Aggiusta se necessario */
+.setup-box h3 { font-family: var(--font-primary); color: var(--ogame-highlight); margin-bottom: 15px; text-align: center; }
+#character-details-predefined, #character-details-custom { flex-grow: 1; display: flex; flex-direction: column; }
+.character-stats, .character-bonus-display { margin-bottom: 15px; }
+#custom-attributes-form { max-height: 200px; overflow-y: auto; margin-bottom: 10px; padding-right: 5px; }
+.character-selector { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+.character-selector .arrow-btn { background: none; border: none; color: var(--ogame-highlight); font-size: 1.8em; cursor: pointer; padding: 5px 10px; }
+.character-selector .arrow-btn:hover { color: var(--ogame-highlight-hover); }
+.character-portrait { width: 120px; height: 120px; background-color: var(--ogame-bg); border: 2px solid var(--ogame-border-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; font-size: 4em; color: var(--ogame-text-medium); }
+.character-name-display { font-size: 1.3em; font-weight: bold; text-align: center; margin-bottom: 10px; min-height: 1.5em; }
+.character-stats ul, .character-bonus-display ul { list-style: none; padding: 0; margin-bottom: 10px; }
+.character-stats li, .character-bonus-display li { display: flex; justify-content: space-between; font-size: 0.9em; padding: 3px 0; border-bottom: 1px dashed var(--ogame-border); }
+.character-stats li:last-child, .character-bonus-display li:last-child { border-bottom: none; }
+.character-stats .stat-label, .character-bonus-display .bonus-label { color: var(--ogame-text-medium); }
+.character-stats .stat-value, .character-bonus-display .bonus-value { font-weight: bold; }
+.character-bonus-display .bonus-description { font-size: 0.8em; color: var(--ogame-text-dark); margin-top: 2px; }
+.custom-character-form .form-group { margin-bottom: 8px; }
+.custom-character-form label { font-size: 0.9em; display: inline-block; width: 120px; }
+.custom-character-form input[type="number"], .custom-character-form select { width: 60px; padding: 5px; text-align: center; margin-left: 10px; background-color: var(--ogame-bg); border: 1px solid var(--ogame-border); color: var(--ogame-text); }
+.custom-character-form select { width: calc(100% - 130px); } /* Calcola larghezza per select */
+.points-summary { font-weight: bold; margin-top: 10px; padding: 5px; background-color: var(--ogame-bg); border: 1px solid var(--ogame-border); text-align: center; }
+.points-summary.over-limit { color: var(--ogame-red); }
+
+.faction-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top:15px; max-height: 45vh; overflow-y:auto;}
+.faction-card { background: var(--ogame-surface1); border: 1px solid var(--ogame-border); padding: 15px; cursor: pointer; transition: all var(--transition-speed); text-align: center; }
+.faction-card:hover { border-color: var(--ogame-highlight); background-color: var(--ogame-surface2); }
+.faction-card.selected { border-color: var(--ogame-highlight); box-shadow: 0 0 10px var(--ogame-highlight); }
+.faction-logo-container { width: 60px; height: 60px; margin: 0 auto 10px auto; background-color: var(--ogame-bg); border-radius: 50%; display:flex; align-items:center; justify-content:center; }
+.faction-info h3 { font-size: 1.1em; color: var(--ogame-text); margin-bottom: 5px; }
+.faction-info p { font-size: 0.85em; color: var(--ogame-text-medium); margin-bottom: 0; }
+
+
+/* Flash Messages e Footer */
+.flash-messages { padding: 10px; margin: 10px auto; border-radius: var(--border-radius); text-align:center; position: absolute; top: 60px; left: 50%; transform: translateX(-50%); z-index:1001; min-width: 300px;}
+.alert-success { background-color: var(--ogame-green); color: var(--ogame-bg); }
+.alert-error { background-color: var(--ogame-red); color: #fff; }
+.alert-warning { background-color: var(--ogame-highlight); color: var(--ogame-bg); }
+.messages-overlay {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: rgba(31, 42, 54, 0.95);
+    color: var(--ogame-text);
+    border: 1px solid var(--ogame-border-light);
+    border-radius: var(--border-radius);
+    z-index: 1002;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+.messages-overlay.visible { opacity: 1; visibility: visible; }
+.messages-overlay.error_messages { background-color: rgba(150, 50, 50, 0.95); border-color: var(--ogame-red); }
+.messages-overlay.success_messages { background-color: rgba(50, 150, 50, 0.95); border-color: var(--ogame-green); }
+
+.app-footer {
+    background-color: var(--ogame-surface1);
+    border-top: 1px solid var(--ogame-border);
+    padding: 8px;
+    text-align: center;
+    font-size: 0.8em;
+    color: var(--ogame-text-medium);
+    flex-shrink: 0;
+}

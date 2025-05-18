@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2Mars: Chronica Martis - Avvio Partita</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body> <div class="app-container">
+        <header class="app-header">
+            <h1><i class="fas fa-rocket"></i> 2Mars: Chronica Martis</h1>
+        </header>
+
+        <main class="app-main-content index-screen-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                 <script> // Script per far scomparire i flash messages
+                    setTimeout(function() {
+                        const flashMessages = document.querySelector('.flash-messages');
+                        if (flashMessages) {
+                            flashMessages.style.display = 'none';
+                        }
+                    }, 7000);
+                </script>
+                {% endif %}
+            {% endwith %}
+
+            <section id="start-screen" class="screen active">
+                <div class="screen-content">
+                    <h2>Benvenuto su Marte, Comandante!</h2>
+                    <p>Il destino della colonizzazione marziana è nelle tue mani. Scegli il tuo personaggio e la fazione, e guida l'umanità verso un nuovo futuro tra le stelle rosse.</p>
+                    <div class="button-group">
+                        <button id="new-game-btn" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Nuova Partita</button>
+                        <button id="continue-game-btn" class="btn"><i class="fas fa-play-circle"></i> Continua Partita</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="setup-screen" class="screen">
+                <form id="start-game-form" action="{{ url_for('start_game_route') }}" method="POST">
+                    <div class="screen-content" style="max-width: 1200px;">
+                        <h2><i class="fas fa-user-astronaut"></i><i class="fas fa-flag" style="margin-left:10px;"></i> Configurazione Partita</h2>
+                        <div class="form-group">
+                            <label for="player_name"><i class="fas fa-id-card"></i> Nome Comandante (Partita):</label>
+                            <input type="text" id="player_name" name="player_name" class="form-control" required value="Comandante Shepard" placeholder="Il tuo nome per questa partita...">
+                        </div>
+
+                        <div class="setup-container">
+                            <div class="setup-box character-box">
+                                <h3>Scegli il Tuo Personaggio</h3>
+                                <div class="character-selector">
+                                    <button type="button" id="prev-char-btn" class="arrow-btn"><i class="fas fa-chevron-left"></i></button>
+                                    <div id="character-portrait-area" class="character-portrait">
+                                        <i class="fas fa-user-astronaut"></i>
+                                    </div>
+                                    <button type="button" id="next-char-btn" class="arrow-btn"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                                <div id="character-name-display" class="character-name-display">Nome Personaggio</div>
+
+                                <div id="character-details-predefined">
+                                    <div class="character-stats">
+                                        <h4>Attributi:</h4>
+                                        <ul id="character-attributes-list">
+                                            </ul>
+                                    </div>
+                                    <div class="character-bonus-display">
+                                        <h4>Bonus Iniziale:</h4>
+                                        <div id="character-bonus-name">Nome Bonus</div>
+                                        <div id="character-bonus-description" class="bonus-description">Descrizione bonus...</div>
+                                    </div>
+                                </div>
+                                <div class="character-action-button" style="margin-top: auto; padding-top:15px; text-align:center;">
+                                    <button type="button" id="select-char-btn" class="btn">Usa Questo Personaggio</button>
+                                </div>
+                                <input type="hidden" id="character_choice_type" name="character_choice_type" value="">
+                                <input type="hidden" id="selected_character_id_hidden_for_form" name="character_selection" value="">
+
+                                <div id="character-details-custom" style="display:none;">
+                                    <div class="form-group">
+                                        <label for="custom_char_name">Nome Personaggio Custom:</label>
+                                        <input type="text" id="custom_char_name" name="custom_char_name_field" class="form-control" value="Comandante Custom">
+                                    </div>
+                                    <h4>Distribuisci Punti Attributo:</h4>
+                                    <div id="custom-attributes-form" class="custom-character-form">
+                                        </div>
+                                    <div id="custom-points-summary" class="points-summary">Punti Usati: 0 / {{ MAX_CUSTOM_ATTRIBUTE_POINTS_PY }}</div>
+                                    <h4>Scegli Bonus Iniziale:</h4>
+                                    <div class="form-group">
+                                        <select id="custom-bonus-select" name="custom_char_bonus_id" class="form-control">
+                                            </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setup-box faction-box">
+                                <h3>Scegli la Tua Fazione</h3>
+                                <p class="label-faction-selection" style="text-align:center;">Seleziona una fazione:</p>
+                                <div id="faction-list" class="faction-selector scrollable-list">
+                                    {% if factions %}
+                                        {% for faction in factions %}
+                                        <div class="faction-card" data-faction-id="{{ faction.id }}" title="{{ faction.description }}">
+                                            <div class="faction-logo-container">
+                                                {{ faction.logo_svg | safe }}
+                                            </div>
+                                            <div class="faction-info">
+                                                <h3>{{ faction.name }}</h3>
+                                                <p class="faction-description">{{ faction.description | truncate(80) }}</p>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p>Nessuna fazione disponibile.</p>
+                                    {% endif %}
+                                </div>
+                                <input type="hidden" id="selected_faction_id" name="factionId" value="">
+                            </div>
+                        </div>
+
+                        <div class="button-group" style="margin-top:30px;">
+                            <button type="submit" id="start-game-actual-btn" class="btn btn-primary" disabled><i class="fas fa-shuttle-space"></i> Inizia Colonizzazione!</button>
+                            <button type="button" id="back-to-start-btn" class="btn"><i class="fas fa-arrow-left"></i> Indietro</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>© 2025 2Mars Project</p>
+        </footer>
+        <div id="messageArea" class="messages-overlay"></div>
+    </div>
+
+    <script>
+        // Dati globali iniettati da Flask, necessari per indexPage.js
+        // const factionsDataFromFlask = {{ factions | tojson | safe }}; // Già renderizzato nell'HTML, ma JS potrebbe averne bisogno se non legge dal DOM
+        const characterCreationDataFromFlask = {{ character_data | tojson | safe }};
+        const MAX_CUSTOM_ATTRIBUTE_POINTS = {{ MAX_CUSTOM_ATTRIBUTE_POINTS_PY }}; // Assicurati che MAX_CUSTOM_ATTRIBUTE_POINTS_PY sia passato dal template Python
+    </script>
+
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gameState.js') }}"></script> <script src="{{ url_for('static', filename='js/uiManager.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script> <script src="{{ url_for('static', filename='js/gameActions.js') }}"></script> <script src="{{ url_for('static', filename='js/indexPage.js') }}"></script> <script src="{{ url_for('static', filename='js/main.js') }}"></script> </body>
+</html>
+
+        const factionsDataFromFlask = {{ factions | tojson | safe }}; // Già presente
+        const characterCreationDataFromFlask = {{ character_data | tojson | safe }}; // Dati per i personaggi
+        const MAX_CUSTOM_ATTRIBUTE_POINTS = 17; // Coerente con la logica Python
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

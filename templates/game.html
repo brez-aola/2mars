@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2Mars: Chronica Martis - Loading...</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </head>
+<body class="game-active-page">
+    <div class="app-container">
+        <header class="app-header">
+            <h1>
+                <i class="fas fa-satellite-dish"></i> 2Mars - Chronica Martis
+                <span id="app-header-player-info" style="font-weight:normal; font-size:0.7em;">
+                    </span>
+                <span style="float:right; font-size:0.8em; color: var(--ogame-text-medium);">
+                    Year: <span id="gameYearCompact">{{ game_state.current_year }}</span> | Week: <span id="gameTurnCompact">{{ game_state.current_turn }}</span>
+                </span>
+            </h1>
+        </header>
+
+        <div class="game-top-bar" id="resources-compact">
+            <span class="res-item placeholder">Loading resources...</span>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages" style="position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 2000; width: auto; min-width: 300px;">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            <script>
+                setTimeout(function() {
+                    const flashMessages = document.querySelector('.flash-messages');
+                    if (flashMessages) {
+                        flashMessages.style.display = 'none';
+                    }
+                }, 7000); // Aumentato a 7 secondi per errori lunghi
+            </script>
+            {% endif %}
+        {% endwith %}
+
+        <main class="app-main-content">
+            <aside class="game-panel game-panel-left">
+                <div class="panel-header">
+                    <span><i class="fas fa-bars"></i> Overview</span>
+                </div>
+                <div class="panel-content">
+                    <div class="module character-ingame-panel" id="character-panel-ingame">
+                        <div class="module-header active" data-module-body="character-panel-body">
+                            <h4><i class="fas fa-user-circle"></i> Commander</h4>
+                            <span class="header-info">Lvl: <span id="char-level-ingame">1</span></span>
+                        </div>
+                        <div class="module-body active" id="character-panel-body">
+                            <div id="char-portrait-ingame" class="character-ingame-portrait">
+                                <i class="fas fa-user-astronaut"></i>
+                            </div>
+                            <h5 id="char-name-ingame" style="text-align:center; margin-bottom:10px;">Character Name</h5>
+                            <div class="character-stats">
+                                <ul id="char-attributes-ingame" class="stat-list">
+                                    <li><span class="stat-label">Loading...</span><span class="stat-value"></span></li>
+                                </ul>
+                            </div>
+                            <div class="active-bonuses-list">
+                                <h6>Active Bonuses:</h6>
+                                <ul id="char-bonuses-ingame" class="stat-list">
+                                    <li><span class="stat-label">Loading...</span></li>
+                                </ul>
+                            </div>
+                            <div id="char-xp-bar-container" style="margin-top:10px;">
+                                <div class="progress-bar-container" title="XP">
+                                    <div id="char-xp-bar" class="progress-bar" style="width:0%;"></div>
+                                </div>
+                                <p style="text-align:center; font-size:0.8em;">XP: <span id="char-xp-display">0/0</span></p>
+                            </div>
+                            <div id="char-points-available" style="font-size:0.85em; margin-top:5px;">
+                                AP: <span id="char-ap-available">0</span> | BP: <span id="char-bp-available">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module faction-relations-panel" id="faction-relations-module">
+                        <div class="module-header" data-module-body="faction-relations-body">
+                            <h4><i class="fas fa-handshake"></i> Faction Relations</h4>
+                        </div>
+                        <div class="module-body" id="faction-relations-body">
+                            <ul id="faction-relations-list">
+                                <li class="relation-item"><span class="faction-name-rel">Loading factions...</span> <span class="faction-status-rel"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="module" id="habitat-module">
+                        <div class="module-header" data-module-body="habitat-module-body-content">
+                            <h4><i class="fas fa-home"></i> Primary Habitat</h4>
+                            <span class="header-info">Pop: <span id="hab-pop">0</span>/<span id="hab-max-pop">0</span></span>
+                        </div>
+                        <div class="module-body" id="habitat-module-body-content">
+                            <h5>Installed Buildings:</h5>
+                            <ul id="buildingList" class="item-list-icons">
+                                <li class="no-items">No buildings.</li>
+                            </ul>
+                            <div id="habitat-report-container" class="info-box" style="margin-top: 15px; padding: 10px; background-color: var(--ogame-surface2); border-radius: var(--border-radius);">
+                                <h5><i class="fas fa-file-alt"></i> Habitat Report:</h5>
+                                <pre id="habitat-report-text" style="white-space: pre-wrap; font-size: 0.85em; max-height: 150px; overflow-y: auto;">No report.</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module" id="construction-module">
+                         <div class="module-header" data-module-body="construction-module-body-content">
+                            <h4><i class="fas fa-tools"></i> Construction</h4>
+                        </div>
+                        <div class="module-body" id="construction-module-body-content">
+                            <ul id="buildableBuildingList" class="item-list-icons">
+                                <li class="no-items">Nothing available to build.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="game-panel game-panel-center">
+                <div class="panel-header">
+                    <span><i class="fas fa-globe-americas"></i> Planetary Map</span>
+                    <span id="currentLocationDisplay" class="header-info">Location: N/A</span>
+                </div>
+                <div class="panel-content">
+                    <div class="map-view-container">
+                        <div id="hex-map-container">
+                            <div id="hexMap">
+                                <p class="loading-placeholder">Loading map...</p>
+                            </div>
+                        </div>
+                        <div id="selected-hex-info">
+                            <div id="hex-details-content">
+                                <p class="placeholder-text">Select a hex to see details.</p>
+                            </div>
+                            <div id="hex-specific-construction-module" style="margin-top: 15px;">
+                                <h5 style="color: var(--ogame-blue); margin-bottom: 5px;"><i class="fas fa-tools"></i> Build on this Hex:</h5>
+                                <ul id="hexBuildableBuildingList" class="item-list-icons">
+                                    <li class="no-items">Select an owned, empty hex.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="game-panel game-panel-right">
+                <div class="panel-header">
+                    <span><i class="fas fa-cogs"></i> Operations</span>
+                </div>
+                <div class="panel-content">
+                     <div class="module" id="research-module">
+                        <div class="module-header active" data-module-body="research-module-body-content">
+                            <h4><i class="fas fa-flask"></i> Research & Development</h4>
+                            <span class="header-info">RP/T: <span id="rp-production-total">?</span></span>
+                        </div>
+                        <div class="module-body active" id="research-module-body-content">
+                            <div id="current-research-status" class="info-box">
+                                <p>No active research.</p>
+                            </div>
+                            <h5>Available Technologies:</h5>
+                            <ul id="available-techs" class="item-list-icons">
+                                <li class="no-items">Loading...</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <div class="module" id="event-log-module">
+                        <div class="module-header" data-module-body="event-log-module-body-content">
+                            <h4><i class="fas fa-clipboard-list"></i> Event Log</h4>
+                        </div>
+                        <div class="module-body" id="event-log-module-body-content">
+                            <div id="event-log-content" class="log-box"><p>No events.</p></div>
+                        </div>
+                    </div>
+                    <div class="module" id="actions-module">
+                        <div class="module-header active" data-module-body="actions-module-body-content">
+                            <h4><i class="fas fa-play"></i> Turn Control</h4>
+                        </div>
+                        <div class="module-body active center-content" id="actions-module-body-content">
+                            <button id="nextTurnBtn" class="btn btn-primary btn-large">Next Turn <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="app-footer">
+            <button id="saveGameBtn" class="btn btn-small"><i class="fas fa-save"></i> Save Game</button>
+            © 2025 2Mars Project
+        </footer>
+
+        <div id="messageArea" class="messages-overlay"></div>
+    </div>
+
+    <script>
+        // Dati globali iniettati da Flask
+        const initialGameData = {{ game_state | tojson | safe }}; // Questo potrebbe non essere usato direttamente se fetchiamo tutto.
+                                                               // Potrebbe essere utile per il rendering iniziale dell'header.
+        const techTreeData = {{ TECH_TREE_FOR_JS | tojson | safe }};
+        const buildingBlueprintsData = {{ BUILDING_BLUEPRINTS_FOR_JS | tojson | safe }};
+        const allFactionsDataForJS = {{ ALL_FACTIONS_FOR_JS | tojson | safe }};
+        // Se MAX_CUSTOM_ATTRIBUTE_POINTS è rilevante per la pagina di gioco (improbabile),
+        // o se qualche script lo aspetta globalmente, definiscilo.
+        // const MAX_CUSTOM_ATTRIBUTE_POINTS = 10; // Probabilmente non serve qui, più per la pagina di setup.
+    </script>
+
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/gameState.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/uiManager.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/characterPanel.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/factionRelationsPanel.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/habitatModule.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mapModule.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/researchModule.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/eventLogModule.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/gameActions.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/gamePage.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>
