@@ -1,118 +1,123 @@
-# 2Mars: A Text-Based Martian Survival Adventure
+# 2Mars - Chronica Martis
 
-## Description
+## Project Overview
 
-**2Mars** is a text-based survival and exploration adventure set on the hostile planet Mars. The player must manage vital resources like health and oxygen, explore different locations, interact with Non-Player Characters (NPCs), collect items, and make crucial decisions through narrative events to ensure their survival and, potentially, lay the groundwork for a future settlement.
+**2Mars - Chronica Martis** is a strategic colony management and exploration game set on the challenging terrain of Mars. Players take on the role of a Commander, leading a chosen faction to establish a foothold, expand their influence, and unravel the mysteries of the Red Planet. The game blends base building, resource management, technological research, character development, and in-depth exploration with narrative and socio-political elements planned for future development.
 
-The game is currently under development, with plans to significantly expand its gameplay mechanics.
+This project is currently under active development, transitioning from a turn-based prototype to a real-time system with variable game speeds, backed by a persistent PostgreSQL database and a scalable server architecture envisioned for potential multiplayer capabilities.
 
-## Game Premise (As Envisioned by the Developer)
+**Current State:** Single-player, web-based, built with Python (Flask) for the backend and HTML/CSS/JavaScript (ES6 Modules) for the frontend.
 
-(Here you can add a short narrative introduction. For example: "You are one of the first colonists on Mars, but an unforeseen disaster has compromised the mission. Now, with limited resources and a hostile environment, you must...")
+## Core Gameplay Features (Implemented & In Progress)
 
-## Current Features
+*   **Faction Selection:** Choose from diverse factions, each with unique starting bonuses, units, and playstyles.
+*   **Character System:**
+    *   Select predefined commanders or create a custom character with unique attributes and starting bonuses.
+    *   Gain experience (XP) and level up to improve attributes and unlock new perks.
+*   **Resource Management:** Extract and manage vital Martian resources like Water Ice, Regolith, Rare Earth Elements, Food, and Energy.
+*   **Base Building & Habitat Development:**
+    *   Construct and upgrade a variety of buildings within your habitat(s) to produce resources, conduct research, house population, and more.
+    *   Manage population, morale, and overall habitat efficiency.
+*   **Technological Advancement:** Research a vast and branching technology tree to unlock new buildings, units, abilities, and gameplay mechanics.
+*   **Hexagonal Map Exploration:**
+    *   Explore a procedurally generated (or pre-defined) hexagonal map of Mars.
+    *   Discover different terrain types, resource deposits, and Points of Interest (POIs).
+    *   Expand your territory by establishing new habitats or outposts.
+*   **Real-Time Gameplay (In Transition):** The game is moving towards a real-time system with adjustable game speeds, where actions like construction, research, and unit movement will take in-game time.
+*   **Persistent World (Planned):** All game state, including map discoveries, player progress, faction states, and event outcomes, will be persisted in a PostgreSQL database.
 
-*   **Character Management:** Monitor and manage vital attributes like health and oxygen.
-*   **Inventory System:** Collect and use items, resources, and tools found during exploration.
-*   **Exploration:** Move between different interconnected locations on Mars, each with its own description and potential encounters or resources.
-*   **Multiple-Choice Narrative Events:** Face events that require decision-making, with choices that can impact the player's status or the environment.
-*   **NPC Interaction:** Meet other survivors or entities, dialogue with them, and learn more about the game world.
-*   **Dynamic Game Logic:** The game state is managed by the backend (Flask) and dynamically updated on the frontend via JavaScript.
+## Planned Future Features
 
-## Technologies Used
+*   **Advanced Exploration Mode:** A "Fallout-style" detailed exploration of individual hexes, featuring local NPCs, loot, mini-quests, and environmental storytelling.
+*   **Narrative Interaction System:** Rich, branching dialogues with meaningful choices and consequences, driving personal and faction storylines.
+*   **Socio-Political Management:** In-depth management of settlements, including laws, policies, internal factions, colonist happiness, and social events.
+*   **Dynamic NPC Factions & Diplomacy:** AI-controlled factions with their own goals, resources, and diplomatic stances, leading to a more dynamic and reactive game world.
+*   **Martian Weather & Events:** Global and localized weather phenomena (dust storms, meteor showers) and unique scripted events that impact gameplay.
+*   **Custom Technologies:** Potential for players or factions to discover or develop unique technologies beyond the standard tech tree.
+*   **Units & Combat (Basic framework in place, expansion planned):** Design, produce, and command various unit types for exploration, construction, and (eventually) defense/combat.
+*   **Multiplayer Capabilities:** The long-term architectural goal is to support multiplayer interactions, whether cooperative or competitive.
 
-*   **Backend:** Python 3, Flask (web framework)
-*   **Frontend:** HTML5, CSS3, JavaScript
-*   **Data Structure:** Game logic and data (story, locations, events, NPCs, items) primarily managed through Python classes and data structures.
+## Technology Stack
 
-## Project Structure
+*   **Backend:**
+    *   Python
+    *   Flask (current web framework, potential to evolve to FastAPI for certain components)
+    *   SQLAlchemy (planned ORM for database interaction)
+    *   Psycopg (PostgreSQL adapter for Python)
+*   **Database:**
+    *   PostgreSQL (for all persistent game data)
+*   **Frontend:**
+    *   HTML5
+    *   CSS3 (with CSS Variables)
+    *   JavaScript (ES6 Modules)
+*   **Real-Time Communication (Planned for full real-time & multiplayer):**
+    *   WebSockets (e.g., via FastAPI, aiohttp, or a dedicated WebSocket server)
+    *   Message Queues (e.g., Redis, RabbitMQ for decoupling game engine and web server)
+*   **Game Engine (Planned for full real-time & multiplayer):**
+    *   Dedicated Python process, potentially using `asyncio`.
 
-*   `app.py`: Main Flask application. Manages HTTP routes, core server-side game logic, and user sessions.
-*   `game_logic/`: Contains Python classes defining the core game elements:
-    *   `player.py`: `Player` class (status, actions).
-    *   `world.py`: `World` class (location management, world generation).
-    *   `event.py`: `Event` class (multiple-choice events).
-    *   `npc.py`: `Npc` class (non-player characters).
-    *   `items.py`: Classes for `Item`, `Resource`, `Tool`, `Weapon`.
-    *   `story_elements.py`: Initial definitions for story, locations, events, NPCs, and items.
-*   `static/`: Contains static files served directly to the client:
-    *   `css/style.css`: Stylesheets for the user interface.
-    *   `js/main.js`: (and other JS files if split) Client-side JavaScript logic for interactivity, AJAX calls to the backend, and UI updates.
-*   `templates/index.html`: Main HTML template (uses Jinja2) for displaying the game interface.
-*   `README.md`: This file.
+## Current Development Focus
 
-## Installation and Setup (Local)
+1.  **Stabilizing Frontend Interactions:** Refactoring JavaScript to use modern `addEventListener` patterns consistently across all UI modules.
+2.  **Database Integration (PostgreSQL):**
+    *   Designing and implementing the core database schema.
+    *   Integrating SQLAlchemy/Psycopg into the backend logic.
+    *   Migrating game state management from in-memory objects to the database.
+3.  **Real-Time Game Loop Implementation (Server-Side):**
+    *   Developing a robust server-side game loop that handles game time, speed controls, and updates game state based on elapsed time.
+    *   Implementing time-based queues for construction, research, and other long-running actions.
+4.  **Real-Time Client Updates:**
+    *   Transitioning from client-side polling of `/api/game_state` to a more efficient real-time update mechanism (initially SSE, eventually WebSockets).
 
-1.  **Clone the repository:**
+## Getting Started / Running the Project (Development)
+
+*(This section will need to be filled in by you based on your specific setup process)*
+
+1.  **Prerequisites:**
+    *   Python (e.g., 3.10+)
+    *   PostgreSQL server installed and running.
+    *   `pip` for installing Python packages.
+    *   (Any other specific tools?)
+2.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/brez-aola/2mars.git
-    cd 2mars
+    git clone [URL_DEL_TUO_REPOSITORY]
+    cd 2mars-chronica-martis
     ```
-
-2.  **Create and activate a virtual environment (recommended):**
+3.  **Set up Python Virtual Environment:**
     ```bash
     python -m venv venv
-    # On Windows
-    # venv\Scripts\activate
-    # On macOS/Linux
-    # source venv/bin/activate
+    source venv/bin/activate  # Linux/macOS
+    # venv\Scripts\activate    # Windows
     ```
-
-3.  **Install dependencies:**
-    Currently, the main dependency is Flask. It's good practice to create a `requirements.txt` file.
+4.  **Install Dependencies:**
     ```bash
-    pip install Flask
-    # If you have a requirements.txt:
-    # pip install -r requirements.txt
+    pip install -r requirements.txt
     ```
-    *(To create `requirements.txt` after installing Flask: `pip freeze > requirements.txt`)*
-
-4.  **Start the Flask application:**
+    *(You'll need to create a `requirements.txt` file: `pip freeze > requirements.txt`)*
+5.  **Database Setup:**
+    *   Create a PostgreSQL database (e.g., `mars_game_db`).
+    *   Configure database connection details (e.g., in an environment file `.env` or a `config.py`).
+    *   Run any database migrations (if using Alembic with SQLAlchemy).
+6.  **Set Flask Environment Variables (if any):**
+    *   `FLASK_APP=app.py`
+    *   `FLASK_DEBUG=1` (for development)
+    *   `FLASK_SECRET_KEY` (generate a strong random key)
+    *   `DATABASE_URL` (e.g., `postgresql://user:password@host:port/dbname`)
+7.  **Run the Application:**
+    ```bash
+    flask run
+    ```
+    Or, if running a custom game loop thread:
     ```bash
     python app.py
     ```
+8.  Open your browser and navigate to `http://127.0.0.1:5000/`.
 
-5.  **Open the game in your browser:**
-    Navigate to `http://127.0.0.1:5000` (or the address and port shown in your terminal).
+## Contribution
 
-## How to Play (Current State)
+*(Details on how others can contribute, coding standards, etc. - if applicable)*
 
-*   Use the "Start Game" or "Reset Game" buttons to begin or restart a game.
-*   Read the story text and the description of your current location.
-*   Your stats (health, oxygen) and inventory are displayed.
-*   When events occur, click the choice buttons to proceed.
-*   Use available action buttons (e.g., "Move to...", "Interact with...") to interact with the game world.
-*   The main goal is to survive by exploring and managing resources.
-
-## Planned Future Developments
-
-*   **Hex Grid-Based Visualization:** Introduction of a visual map (likely stylized) based on hexagons for exploration.
-*   **Character Vision/Line of Sight:** Implementation of field-of-view or line-of-sight mechanics for the character on the map.
-*   **Advanced Settlement Management:**
-    *   Internal political dynamics.
-    *   Social issues and population management.
-    *   Psychological aspects of colonists and the player character.
-*   **Content Expansion:** More locations, events, NPCs, items, and a deeper storyline.
-*   **Crafting and Building:** Ability to create new items and structures.
-*   **More:** (Add other ideas you have here)
-
-
-## Contributing
-
-We welcome contributions to 2Mars! Whether it's reporting a bug, suggesting a new feature, improving documentation, or writing code, your help is appreciated.
-
-**Ways to Contribute:**
-
-*   **Report Bugs:** If you find a bug, please open an issue in the [Issues tab](https://github.com/brez-aola/2mars/issues) and describe the problem in detail, including steps to reproduce it.
-*   **Suggest Features:** Have an idea for a new feature or an improvement? Open an issue in the [Issues tab](https://github.com/brez-aola/2mars/issues) to discuss it.
-*   **Submit Code Changes:**
-    1.  Fork the repository.
-    2.  Create a new branch for your changes (e.g., `git checkout -b feature/my-new-feature` or `git checkout -b fix/issue-123`).
-    3.  Make your changes and commit them with clear messages.
-    4.  Push your branch to your fork (e.g., `git push origin feature/my-new-feature`).
-    5.  Open a Pull Request to the `main` branch of this repository. Please provide a clear description of your changes in the Pull Request.
-
-We aim to review contributions promptly. Thank you for helping make 2Mars better!
+Currently, this is a solo project. Future contributions might be considered as the project matures.
 
 ## License
 
